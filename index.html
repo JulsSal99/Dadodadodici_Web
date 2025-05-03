@@ -1,146 +1,118 @@
 <!DOCTYPE html>
 <html lang="it">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Giochi in Sede</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎲 Giochi in Sede</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
 </head>
+<body class="container py-4">
+  <h2 class="mb-4">🎲 Giochi in Sede</h2>
 
-<body class="p-4">
-    <div class="container">
-        <h2 class="mb-4">Giochi in sede</h2>
-
-        <div class="row g-3 align-items-end mb-3">
-            <div class="col-md-3">
-                <label for="filterProprietario" class="form-label">Filtra per Proprietario</label>
-                <select id="filterProprietario" class="form-select" onchange="filterTable()">
-                    <option value="">Tutti</option>
-                </select>
-            </div>
-
-            <div class="col-md-3">
-                <label for="filterTag" class="form-label">Filtra per Tipologia</label>
-                <select id="filterTag" class="form-select" onchange="filterTable()">
-                    <option value="">Tutti</option>
-                </select>
-            </div>
-
-            <div class="col-md-4">
-                <label for="searchKeyword" class="form-label">Cerca per parola chiave</label>
-                <input type="text" id="searchKeyword" class="form-control" oninput="filterTable()"
-                    placeholder="es. Dixit">
-            </div>
-        </div>
-
-        <table class="table table-bordered">
-            <thead class="table-light">
-                <tr>
-                    <th>Nome</th>
-                    <th>Proprietario</th>
-                    <th>TagTipologia</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
-
-        <h4 class="mt-5">Aggiungi nuovo gioco</h4>
-        <div class="row g-3 mb-3">
-            <div class="col-md-3">
-                <input id="nome" class="form-control" placeholder="Nome">
-            </div>
-            <div class="col-md-3">
-                <input id="proprietario" class="form-control" placeholder="Proprietario">
-            </div>
-            <div class="col-md-3">
-                <input id="tag" class="form-control" placeholder="TagTipologia">
-            </div>
-            <div class="col-md-3">
-                <button class="btn btn-primary w-100" onclick="aggiungi()">Aggiungi</button>
-            </div>
-        </div>
+  <!-- Form di Aggiunta Nuovi Dati -->
+  <div class="row g-2 mb-4">
+    <div class="col-md-4">
+      <input id="nome" class="form-control" placeholder="Nome" />
     </div>
+    <div class="col-md-4">
+      <input id="proprietario" class="form-control" placeholder="Proprietario" />
+    </div>
+    <div class="col-md-4">
+      <input id="tag" class="form-control" placeholder="TagTipologia" />
+    </div>
+    <div class="col-12">
+      <button onclick="aggiungi()" class="btn btn-primary mt-2">Aggiungi</button>
+    </div>
+  </div>
 
-    <script>
-        const apiURL = "https://script.google.com/macros/s/AKfycbwFNGqFaYk3oGaxDJAiltSs_b0ercEuou7oQEHzEFBmbKp8ZwRvOzsVbeeTw8GEb07ZmQ/exec"; // esempio: "https://script.google.com/macros/s/.../exec"
-        const sheetName = "giochi_in_sede";
-        let dati = [];
+  <!-- Filtro di Ricerca -->
+  <div class="mb-3">
+    <input
+      id="filtro"
+      class="form-control"
+      placeholder="🔍 Cerca per qualsiasi campo..."
+      oninput="filtra()"
+    />
+  </div>
 
-        async function caricaDati() {
-            const res = await fetch(`${apiURL}?sheet=${sheetName}`);
-            dati = await res.json();
-            popolaTabella(dati);
-            popolaFiltri(dati);
+  <!-- Tabella che Mostra i Dati -->
+  <table class="table table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>Nome</th>
+        <th>Proprietario</th>
+        <th>TagTipologia</th>
+      </tr>
+    </thead>
+    <tbody id="tabella-body"></tbody>
+  </table>
+
+  <script>
+    let dati = [];
+
+    // Carica i dati dal Google Sheets
+    function caricaDati() {
+      fetch('https://script.google.com/macros/s/AKfycbxAG1o7akDQd2TwLyMKkWLY9fFuE78hCYqL1kt1beno-vk1pp85A27rD5ynSm3XkF0sqg/exec')
+        .then(response => response.json())
+        .then(res => {
+          dati = res;
+          mostra(dati);
+        })
+        .catch(err => console.log("Errore nel caricamento dei dati: ", err));
+    }
+
+    // Mostra i dati nella tabella
+    function mostra(lista) {
+      const tbody = document.getElementById("tabella-body");
+      tbody.innerHTML = "";  // Pulisce la tabella prima di aggiungere i nuovi dati
+      lista.forEach(r => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${r.Nome}</td><td>${r.Proprietario}</td><td>${r.TagTipologia}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Filtra i dati in base al campo di ricerca
+    function filtra() {
+      const q = document.getElementById("filtro").value.toLowerCase();
+      const filtrati = dati.filter(r =>
+        r.Nome.toLowerCase().includes(q) ||
+        r.Proprietario.toLowerCase().includes(q) ||
+        r.TagTipologia.toLowerCase().includes(q)
+      );
+      mostra(filtrati);
+    }
+
+    // Aggiunge i nuovi dati al foglio
+    function aggiungi() {
+      const nuovo = {
+        Nome: document.getElementById("nome").value,
+        Proprietario: document.getElementById("proprietario").value,
+        TagTipologia: document.getElementById("tag").value
+      };
+      
+      // Aggiunge i dati al foglio tramite Google Apps Script
+      fetch('https://script.google.com/macros/s/AKfycbxAG1o7akDQd2TwLyMKkWLY9fFuE78hCYqL1kt1beno-vk1pp85A27rD5ynSm3XkF0sqg/exec', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(nuovo)
+      })
+      .then(response => {
+        if (response.ok) {
+          caricaDati();  // Ricarica i dati dopo aver aggiunto
         }
+      })
+      .catch(err => console.log("Errore nell'aggiunta dei dati: ", err));
+    }
 
-        function popolaTabella(data) {
-            const tbody = document.getElementById("tableBody");
-            tbody.innerHTML = "";
-            data.forEach(row => {
-                tbody.innerHTML += `<tr>
-          <td>${row.Nome}</td>
-          <td>${row.Proprietario}</td>
-          <td>${row.TagTipologia}</td>
-        </tr>`;
-            });
-        }
+    // Carica i dati all'inizio
+    caricaDati();
+  </script>
 
-        function popolaFiltri(data) {
-            const propSet = new Set(data.map(d => d.Proprietario));
-            const tagSet = new Set(data.map(d => d.TagTipologia));
-            const selectProp = document.getElementById("filterProprietario");
-            const selectTag = document.getElementById("filterTag");
-            selectProp.innerHTML = `<option value="">Tutti</option>`;
-            selectTag.innerHTML = `<option value="">Tutti</option>`;
-            propSet.forEach(p => selectProp.innerHTML += `<option value="${p}">${p}</option>`);
-            tagSet.forEach(t => selectTag.innerHTML += `<option value="${t}">${t}</option>`);
-        }
-
-        function filterTable() {
-            const prop = document.getElementById("filterProprietario").value;
-            const tag = document.getElementById("filterTag").value;
-            const keyword = document.getElementById("searchKeyword").value.toLowerCase();
-
-            const filtrati = dati.filter(d => {
-                const matchProp = !prop || d.Proprietario === prop;
-                const matchTag = !tag || d.TagTipologia === tag;
-                const matchKeyword = !keyword || (
-                    d.Nome.toLowerCase().includes(keyword) ||
-                    d.TagTipologia.toLowerCase().includes(keyword) ||
-                    d.Proprietario.toLowerCase().includes(keyword)
-                );
-                return matchProp && matchTag && matchKeyword;
-            });
-
-            popolaTabella(filtrati);
-        }
-
-        const corsProxy = "https://cors-anywhere.herokuapp.com/";  // Proxy CORS
-        const apiURL = "https://script.google.com/macros/s/AKfycbwFNGqFaYk3oGaxDJAiltSs_b0ercEuou7oQEHzEFBmbKp8ZwRvOzsVbeeTw8GEb07ZmQ/exec?sheet=giochi_in_sede";
-        
-        async function aggiungi() {
-          const nuovo = {
-            Nome: encodeURIComponent(document.getElementById("nome").value),
-            Proprietario: encodeURIComponent(document.getElementById("proprietario").value),
-            TagTipologia: encodeURIComponent(document.getElementById("tag").value)
-          };
-        
-          const url = `${corsProxy}${apiURL}&Nome=${nuovo.Nome}&Proprietario=${nuovo.Proprietario}&TagTipologia=${nuovo.TagTipologia}&action=add`;
-        
-          try {
-            const res = await fetch(url);
-            const text = await res.text();
-            console.log("Risposta dal server:", text);
-            await caricaDati();
-          } catch (error) {
-            console.error("Errore:", error);
-          }
-        }
-
-
-
-        caricaDati();
-    </script>
 </body>
-
 </html>
