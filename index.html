@@ -115,26 +115,28 @@
             popolaTabella(filtrati);
         }
 
+        const corsProxy = "https://cors-anywhere.herokuapp.com/";  // Proxy CORS
+        const apiURL = "https://script.google.com/macros/s/AKfycbwFNGqFaYk3oGaxDJAiltSs_b0ercEuou7oQEHzEFBmbKp8ZwRvOzsVbeeTw8GEb07ZmQ/exec?sheet=giochi_in_sede";
+        
         async function aggiungi() {
-            const nuovo = {
-                Nome: document.getElementById("nome").value,
-                Proprietario: document.getElementById("proprietario").value,
-                TagTipologia: document.getElementById("tag").value
-            };
-
-            console.log("Invio nuovo:", nuovo);
-
-            const res = await fetch(`${apiURL}?sheet=${sheetName}`, {
-                method: "POST",
-                body: JSON.stringify(nuovo),
-                headers: { "Content-Type": "application/json" }
-            });
-
+          const nuovo = {
+            Nome: encodeURIComponent(document.getElementById("nome").value),
+            Proprietario: encodeURIComponent(document.getElementById("proprietario").value),
+            TagTipologia: encodeURIComponent(document.getElementById("tag").value)
+          };
+        
+          const url = `${corsProxy}${apiURL}&Nome=${nuovo.Nome}&Proprietario=${nuovo.Proprietario}&TagTipologia=${nuovo.TagTipologia}&action=add`;
+        
+          try {
+            const res = await fetch(url);
             const text = await res.text();
             console.log("Risposta dal server:", text);
-
             await caricaDati();
+          } catch (error) {
+            console.error("Errore:", error);
+          }
         }
+
 
 
         caricaDati();
