@@ -17,7 +17,13 @@
   </style>
 </head>
 <body class="container py-4">
-  <h2 class="mb-4">🎲 Giochi in sede</h2>
+  <!-- Aggiungi questa parte dentro <body> prima del titolo -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>🎲 Giochi in sede</h2>
+    <div>
+      <span id="stato-api" title="Stato API">⚪</span>
+    </div>
+  </div>
 
   <div id="messaggio-errore" class="alert alert-danger"></div>
 
@@ -47,6 +53,28 @@
   </table>
 
   <script>
+    caricaDati();
+    controllaStatoAPI(); // <-- aggiunto
+
+
+    async function controllaStatoAPI() {
+      const stato = document.getElementById("stato-api");
+      try {
+        const res = await fetch(API_URL + "?version=true");
+        if (!res.ok) throw new Error("Errore");
+        const data = await res.json();
+        if (data.version) {
+          stato.textContent = "🟢";
+          stato.title = `API OK - Versione ${data.version}`;
+        } else {
+          throw new Error("Formato inatteso");
+        }
+      } catch (e) {
+        stato.textContent = "🔴";
+        stato.title = "Errore nel contattare l'API";
+      }
+    }
+
     console.log("v01: caricata 04/05/2025 13:59");
     const API_URL = "https://script.google.com/macros/s/AKfycbyTeqJwJI9Qr8PrcZyWiuz4dXX-v7tBJ-kTFQxHAM_oUGgtYoqyRJDEhHqEgvBJAkaD/exec";
     let dati = [];
