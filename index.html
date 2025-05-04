@@ -46,7 +46,7 @@
         dati = dati.map((r, i) => ({ ...r, riga: i + 2 }));
         mostra(dati);
       } catch (err) {
-        const now = new Date().toLocaleString(); // Ottiene data e ora locali
+        const now = "v01";
         console.error(`[${now}] Errore durante il caricamento dati:`, err.message);
       }
     }
