@@ -53,6 +53,10 @@
   </table>
 
   <script>
+
+    console.log("v01: caricata 04/05/2025 14:08");
+    const API_URL = "https://script.google.com/macros/s/AKfycbyTeqJwJI9Qr8PrcZyWiuz4dXX-v7tBJ-kTFQxHAM_oUGgtYoqyRJDEhHqEgvBJAkaD/exec";
+    let dati = [];
     caricaDati();
     controllaStatoAPI(); // <-- aggiunto
 
@@ -74,10 +78,6 @@
         stato.title = "Errore nel contattare l'API";
       }
     }
-
-    console.log("v01: caricata 04/05/2025 14:08");
-    const API_URL = "https://script.google.com/macros/s/AKfycbyTeqJwJI9Qr8PrcZyWiuz4dXX-v7tBJ-kTFQxHAM_oUGgtYoqyRJDEhHqEgvBJAkaD/exec";
-    let dati = [];
 
     function mostraMessaggioErrore(testo) {
       const msg = document.getElementById("messaggio-errore");
