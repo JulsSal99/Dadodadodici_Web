@@ -39,11 +39,18 @@
     let dati = [];
 
     async function caricaDati() {
-      const res = await fetch(API_URL);
-      dati = await res.json();
-      dati = dati.map((r, i) => ({ ...r, riga: i + 2 }));
-      mostra(dati);
+      try {
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        dati = await res.json();
+        dati = dati.map((r, i) => ({ ...r, riga: i + 2 }));
+        mostra(dati);
+      } catch (err) {
+        const now = new Date().toLocaleString(); // Ottiene data e ora locali
+        console.error(`[${now}] Errore durante il caricamento dati:`, err.message);
+      }
     }
+
 
     function mostra(lista) {
       const tbody = document.getElementById("tabella-body");
