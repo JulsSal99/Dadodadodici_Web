@@ -1,118 +1,116 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🎲 Giochi in Sede</title>
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giochi in sede</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="container py-4">
-  <h2 class="mb-4">🎲 Giochi in Sede</h2>
+  <h2 class="mb-4">🎲 Giochi in sede</h2>
 
-  <!-- Form di Aggiunta Nuovi Dati -->
   <div class="row g-2 mb-4">
-    <div class="col-md-4">
-      <input id="nome" class="form-control" placeholder="Nome" />
-    </div>
-    <div class="col-md-4">
-      <input id="proprietario" class="form-control" placeholder="Proprietario" />
-    </div>
-    <div class="col-md-4">
-      <input id="tag" class="form-control" placeholder="TagTipologia" />
-    </div>
+    <div class="col-md-4"><input id="nome" class="form-control" placeholder="Nome" /></div>
+    <div class="col-md-4"><input id="proprietario" class="form-control" placeholder="Proprietario" /></div>
+    <div class="col-md-4"><input id="tag" class="form-control" placeholder="TagTipologia" /></div>
     <div class="col-12">
       <button onclick="aggiungi()" class="btn btn-primary mt-2">Aggiungi</button>
     </div>
   </div>
 
-  <!-- Filtro di Ricerca -->
   <div class="mb-3">
-    <input
-      id="filtro"
-      class="form-control"
-      placeholder="🔍 Cerca per qualsiasi campo..."
-      oninput="filtra()"
-    />
+    <input id="filtro" class="form-control" placeholder="🔍 Cerca..." oninput="filtra()" />
   </div>
 
-  <!-- Tabella che Mostra i Dati -->
   <table class="table table-striped">
     <thead class="table-dark">
       <tr>
         <th>Nome</th>
         <th>Proprietario</th>
         <th>TagTipologia</th>
+        <th>Azioni</th>
       </tr>
     </thead>
     <tbody id="tabella-body"></tbody>
   </table>
 
   <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbyOmBrLPfbNgGjI4Ci_vCcygWp6AnrxipDqa4pH--QaDIpMHJIhtuyaYKNfs06Hm8IS5g/exec";
     let dati = [];
 
-    // Carica i dati dal Google Sheets
-    function caricaDati() {
-      fetch('https://script.google.com/macros/s/AKfycbwLTylD75PnPUCDQXWStoV0ZFWQnCSoR_BTCz7GtSEd1PBiy-ENZE09zlwxJX0GNf_mPA/exec')
-        .then(response => response.json())
-        .then(res => {
-          dati = res;
-          mostra(dati);
-        })
-        .catch(err => console.log("Errore nel caricamento dei dati: ", err));
+    async function caricaDati() {
+      const res = await fetch(API_URL);
+      dati = await res.json();
+      dati = dati.map((r, i) => ({ ...r, riga: i + 2 }));
+      mostra(dati);
     }
 
-    // Mostra i dati nella tabella
     function mostra(lista) {
       const tbody = document.getElementById("tabella-body");
-      tbody.innerHTML = "";  // Pulisce la tabella prima di aggiungere i nuovi dati
+      tbody.innerHTML = "";
       lista.forEach(r => {
         const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${r.Nome}</td><td>${r.Proprietario}</td><td>${r.TagTipologia}</td>`;
+        tr.innerHTML = `
+          <td>${r.Nome}</td>
+          <td>${r.Proprietario}</td>
+          <td>${r.TagTipologia}</td>
+          <td>
+            <button class="btn btn-sm btn-warning me-1" onclick="modifica(${r.riga}, '${r.Nome}', '${r.Proprietario}', '${r.TagTipologia}')">Modifica</button>
+            <button class="btn btn-sm btn-danger" onclick="elimina(${r.riga})">Elimina</button>
+          </td>
+        `;
         tbody.appendChild(tr);
       });
     }
 
-    // Filtra i dati in base al campo di ricerca
     function filtra() {
       const q = document.getElementById("filtro").value.toLowerCase();
       const filtrati = dati.filter(r =>
-        r.Nome.toLowerCase().includes(q) ||
-        r.Proprietario.toLowerCase().includes(q) ||
-        r.TagTipologia.toLowerCase().includes(q)
+        r.Nome?.toLowerCase().includes(q) ||
+        r.Proprietario?.toLowerCase().includes(q) ||
+        r.TagTipologia?.toLowerCase().includes(q)
       );
       mostra(filtrati);
     }
 
-    // Aggiunge i nuovi dati al foglio
-    function aggiungi() {
+    async function aggiungi() {
       const nuovo = {
         Nome: document.getElementById("nome").value,
         Proprietario: document.getElementById("proprietario").value,
         TagTipologia: document.getElementById("tag").value
       };
-      
-      // Aggiunge i dati al foglio tramite Google Apps Script
-      fetch('https://script.google.com/macros/s/AKfycbxAG1o7akDQd2TwLyMKkWLY9fFuE78hCYqL1kt1beno-vk1pp85A27rD5ynSm3XkF0sqg/exec', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+      await fetch(API_URL + "?sheet=foglio_giochi_in_sede", {
+        method: "POST",
         body: JSON.stringify(nuovo)
-      })
-      .then(response => {
-        if (response.ok) {
-          caricaDati();  // Ricarica i dati dopo aver aggiunto
-        }
-      })
-      .catch(err => console.log("Errore nell'aggiunta dei dati: ", err));
+      });
+      caricaDati();
     }
 
-    // Carica i dati all'inizio
+    async function elimina(riga) {
+      if (!confirm("Sei sicuro di voler eliminare questa riga?")) return;
+      await fetch(`${API_URL}?riga=${riga}`, { method: "DELETE" });
+      caricaDati();
+    }
+
+    async function modifica(riga, nome, proprietario, tag) {
+      const nuovoNome = prompt("Modifica Nome", nome);
+      const nuovoProprietario = prompt("Modifica Proprietario", proprietario);
+      const nuovoTag = prompt("Modifica TagTipologia", tag);
+      if (nuovoNome && nuovoProprietario && nuovoTag) {
+        const aggiornato = {
+          Nome: nuovoNome,
+          Proprietario: nuovoProprietario,
+          TagTipologia: nuovoTag
+        };
+        await fetch(`${API_URL}?riga=${riga}`, {
+          method: "PUT",
+          body: JSON.stringify(aggiornato)
+        });
+        caricaDati();
+      }
+    }
+
     caricaDati();
   </script>
-
 </body>
 </html>
