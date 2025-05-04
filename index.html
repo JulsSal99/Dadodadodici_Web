@@ -5,9 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Giochi in sede</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    #messaggio-errore {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      display: none;
+    }
+  </style>
 </head>
 <body class="container py-4">
   <h2 class="mb-4">🎲 Giochi in sede</h2>
+
+  <div id="messaggio-errore" class="alert alert-danger"></div>
 
   <div class="row g-2 mb-4">
     <div class="col-md-4"><input id="nome" class="form-control" placeholder="Nome" /></div>
@@ -35,22 +47,29 @@
   </table>
 
   <script>
+    console.log("v01: caricata 04/05/2025 13:37");
     const API_URL = "https://script.google.com/macros/s/AKfycbyOmBrLPfbNgGjI4Ci_vCcygWp6AnrxipDqa4pH--QaDIpMHJIhtuyaYKNfs06Hm8IS5g/exec";
     let dati = [];
+
+    function mostraMessaggioErrore(testo) {
+      const msg = document.getElementById("messaggio-errore");
+      msg.textContent = testo;
+      msg.style.display = "block";
+      setTimeout(() => msg.style.display = "none", 5000);
+    }
 
     async function caricaDati() {
       try {
         const res = await fetch(API_URL);
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        if (!res.ok) throw new Error("Errore risposta");
         dati = await res.json();
         dati = dati.map((r, i) => ({ ...r, riga: i + 2 }));
         mostra(dati);
-      } catch (err) {
-        const now = "v01";
-        console.error(`[${now}] Errore durante il caricamento dati:`, err.message);
+      } catch (error) {
+        console.error("Errore durante il caricamento dati:", error);
+        mostraMessaggioErrore("Errore: impossibile contattare il server. Riprova più tardi.");
       }
     }
-
 
     function mostra(lista) {
       const tbody = document.getElementById("tabella-body");
@@ -86,17 +105,25 @@
         Proprietario: document.getElementById("proprietario").value,
         TagTipologia: document.getElementById("tag").value
       };
-      await fetch(API_URL + "?sheet=foglio_giochi_in_sede", {
-        method: "POST",
-        body: JSON.stringify(nuovo)
-      });
-      caricaDati();
+      try {
+        await fetch(API_URL + "?sheet=foglio_giochi_in_sede", {
+          method: "POST",
+          body: JSON.stringify(nuovo)
+        });
+        caricaDati();
+      } catch (error) {
+        mostraMessaggioErrore("Errore durante l'aggiunta del gioco.");
+      }
     }
 
     async function elimina(riga) {
       if (!confirm("Sei sicuro di voler eliminare questa riga?")) return;
-      await fetch(`${API_URL}?riga=${riga}`, { method: "DELETE" });
-      caricaDati();
+      try {
+        await fetch(`${API_URL}?riga=${riga}`, { method: "DELETE" });
+        caricaDati();
+      } catch (error) {
+        mostraMessaggioErrore("Errore durante l'eliminazione.");
+      }
     }
 
     async function modifica(riga, nome, proprietario, tag) {
@@ -109,11 +136,15 @@
           Proprietario: nuovoProprietario,
           TagTipologia: nuovoTag
         };
-        await fetch(`${API_URL}?riga=${riga}`, {
-          method: "PUT",
-          body: JSON.stringify(aggiornato)
-        });
-        caricaDati();
+        try {
+          await fetch(`${API_URL}?riga=${riga}`, {
+            method: "PUT",
+            body: JSON.stringify(aggiornato)
+          });
+          caricaDati();
+        } catch (error) {
+          mostraMessaggioErrore("Errore durante la modifica.");
+        }
       }
     }
 
