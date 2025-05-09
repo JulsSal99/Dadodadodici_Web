@@ -134,7 +134,7 @@
         TagTipologia: document.getElementById("tag").value
       };
       try {
-        await fetch(API_URL + "?sheet=foglio_giochi_in_sede", {
+        await fetch(API_URL, {
           method: "POST",
           body: JSON.stringify(nuovo)
         });
