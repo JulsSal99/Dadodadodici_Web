@@ -126,23 +126,40 @@
       );
       mostra(filtrati);
     }
-
     async function aggiungi() {
       const nuovo = {
+        action: "AggiungiNuovo",
         Nome: document.getElementById("nome").value,
         Proprietario: document.getElementById("proprietario").value,
         TagTipologia: document.getElementById("tag").value
       };
+
       try {
-        await fetch(API_URL, {
+        const res = await fetch(API_URL, {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify(nuovo)
         });
-        caricaDati();
+
+        const data = await res.json();
+
+        if (data.success) {
+          console.log("Gioco aggiunto con ID:", data.id);
+          mostraMessaggioSuccesso(`Gioco aggiunto con ID ${data.id}`);
+          caricaDati(); // Ricarica la tabella o elenco giochi
+        } else {
+          throw new Error(data.error || "Errore sconosciuto dal server");
+        }
+
       } catch (error) {
+        console.error("Errore:", error);
         mostraMessaggioErrore("Errore durante l'aggiunta del gioco.");
       }
     }
+
+
 
     async function elimina(riga) {
       if (!confirm("Sei sicuro di voler eliminare questa riga?")) return;
