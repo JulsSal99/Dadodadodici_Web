@@ -43,10 +43,16 @@
   <table class="table table-striped">
     <thead class="table-dark">
       <tr>
-        <th>Nome</th>
+        <th>Titolo</th>
+        <th>Tipologia</th>
+        <th>Autore</th>
         <th>Proprietario</th>
-        <th>TagTipologia</th>
-        <th>Azioni</th>
+        <th>Difficolta</th>
+        <th>Esplicito</th>
+        <th>Consigliato</th>
+        <th>Note</th>
+        <th>Fascia di età</th>
+        <th></th>
       </tr>
     </thead>
     <tbody id="tabella-body"></tbody>
@@ -105,12 +111,18 @@
       lista.forEach(r => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td>${r.Nome}</td>
+          <td>${r.Titolo}</td>
+          <td>${r.Tipologia}</td>
+          <td>${r.Autore}</td>
           <td>${r.Proprietario}</td>
-          <td>${r.TagTipologia}</td>
+          <td>${r.Difficolta}</td>
+          <td>${r.Esplicito}</td>
+          <td>${r.Consigliato}</td>
+          <td>${r.Note}</td>
+          <td>${r.FasciaEta}</td>
           <td>
-            <button class="btn btn-sm btn-warning me-1" onclick="modifica(${r.riga}, '${r.Nome}', '${r.Proprietario}', '${r.TagTipologia}')">Modifica</button>
-            <button class="btn btn-sm btn-danger" onclick="elimina(${r.riga})">Elimina</button>
+            <button class="btn btn-sm btn-warning me-1" onclick="modifica(${r.Id}')">Modifica</button>
+            <button class="btn btn-sm btn-danger" onclick="elimina(${r.Id})">Elimina</button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -127,23 +139,23 @@
       mostra(filtrati);
     }
     async function aggiungi() {
-  const params = new URLSearchParams({
-    action: "AggiungiNuovo",
-    Nome: document.getElementById("nome").value,
-    Proprietario: document.getElementById("proprietario").value,
-    TagTipologia: document.getElementById("tag").value
-  });
+    const params = new URLSearchParams({
+      action: "AggiungiNuovo",
+      Nome: document.getElementById("nome").value,
+      Proprietario: document.getElementById("proprietario").value,
+      TagTipologia: document.getElementById("tag").value
+    });
 
-  try {
-    const res = await fetch(API_URL + "?" + params.toString());
-    const data = await res.json();
-    console.log("Risposta:", data);
-    if (data.success) caricaDati();
-  } catch (error) {
-    console.error("Errore:", error);
-    mostraMessaggioErrore("Errore durante l'aggiunta del gioco.");
+    try {
+      const res = await fetch(API_URL + "?" + params.toString());
+      const data = await res.json();
+      console.log("Risposta:", data);
+      if (data.success) caricaDati();
+    } catch (error) {
+      console.error("Errore:", error);
+      mostraMessaggioErrore("Errore durante l'aggiunta del gioco.");
+    }
   }
-}
 
 
 
