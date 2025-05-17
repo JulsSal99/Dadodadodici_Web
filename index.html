@@ -92,6 +92,10 @@
       setTimeout(() => msg.style.display = "none", 5000);
     }
 
+    /**
+     * @description: carica i dati all'accesso
+     * 
+     * */
     async function caricaDati() {
       try {
         const res = await fetch(API_URL);
@@ -129,15 +133,26 @@
       });
     }
 
+    /**
+     * @description: Filtra i dati in base a una parola generica
+     * 
+     * */
     function filtra() {
       const q = document.getElementById("filtro").value.toLowerCase();
       const filtrati = dati.filter(r =>
-        r.Nome?.toLowerCase().includes(q) ||
+        r.Titolo?.toLowerCase().includes(q) ||
+        r.Tipologia?.toLowerCase().includes(q) ||
+        r.Autore?.toLowerCase().includes(q) ||
         r.Proprietario?.toLowerCase().includes(q) ||
-        r.TagTipologia?.toLowerCase().includes(q)
+        r.Difficolta?.toLowerCase().includes(q) ||
+        r.Esplicito?.toLowerCase().includes(q) ||
+        r.Consigliato?.toLowerCase().includes(q) ||
+        r.Note?.toLowerCase().includes(q) ||
+        r.FasciaEta?.toLowerCase().includes(q)
       );
       mostra(filtrati);
     }
+
     async function aggiungi() {
     const params = new URLSearchParams({
       action: "AggiungiNuovo",
