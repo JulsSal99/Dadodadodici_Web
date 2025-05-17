@@ -145,10 +145,8 @@
         r.Autore?.toLowerCase().includes(q) ||
         r.Proprietario?.toLowerCase().includes(q) ||
         r.Difficolta?.toLowerCase().includes(q) ||
-        r.Esplicito?.toLowerCase().includes(q) ||
-        r.Consigliato?.toLowerCase().includes(q) ||
         r.Note?.toLowerCase().includes(q) ||
-        r.FasciaEta?.toLowerCase().includes(q)
+        r.FasciaEta?.toString().includes(q)
       );
       mostra(filtrati);
     }
