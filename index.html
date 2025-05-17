@@ -150,16 +150,29 @@
      * 
      * */
     function filtra() {
-      const q = document.getElementById("filtro").value.toLowerCase();
+      const q = document.getElementById("filtro").value.toLowerCase().trim();
+
+      if (!q) {
+        mostra(dati); // Se il campo è vuoto, mostra tutti
+        return;
+      }
+
+      const queryParts = q.split(',').map(s => s.trim()).filter(Boolean);
+
       const filtrati = dati.filter(r =>
-        r.Titolo?.toLowerCase().includes(q) ||
-        r.Tipologia?.toLowerCase().includes(q) ||
-        r.Autore?.toLowerCase().includes(q) ||
-        r.Proprietario?.toLowerCase().includes(q) ||
-        r.Difficolta?.toLowerCase().includes(q) ||
-        r.Note?.toLowerCase().includes(q) ||
-        r.FasciaEta?.toString().includes(q)
+        queryParts.every(part =>
+          r.Titolo?.toLowerCase().includes(part) ||
+          r.Tipologia?.toLowerCase().includes(part) ||
+          r.Autore?.toLowerCase().includes(part) ||
+          r.Proprietario?.toLowerCase().includes(part) ||
+          r.Difficolta?.toLowerCase().includes(part) ||
+          r.Note?.toLowerCase().includes(part) ||
+          r.FasciaEta?.toString().includes(part) || 
+          (r.Esplicito ? ('18+'.includes(part) || 'esplicito'.includes(part)) : ''.includes(part)) ||
+          (r.Consigliato ? 'consigliato'.includes(part) : ''.includes(part))
+        )
       );
+
       mostra(filtrati);
     }
 
