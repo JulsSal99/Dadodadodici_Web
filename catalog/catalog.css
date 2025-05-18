@@ -44,6 +44,9 @@
     }
 
     /* STILE */
+    .table-el-giochi {
+        font-size: small;
+    }
     .fascia-eta {
         font-weight: bold;
         font-size: 1.1em;

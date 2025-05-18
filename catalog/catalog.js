@@ -69,11 +69,15 @@ function mostra(lista) {
             // <td class="ps-0 img-small-box">
             //   ${r.FasciaEta ? '<span class="fascia-eta" title="Fascia di età">' + r.FasciaEta + '+</span>' : ''}
             // </td>
+
+            
+            // <td><strong>Note</strong></td>
+            // <td>${r.Note || ''}</td>
         tr.innerHTML = `
           <td>${r.Titolo}</td>
-          <td colspan="3">${r.Autore}</td>
+          <td colspan="2">${r.Tipologia || ''}</td>
           <td>${r.Difficolta}</td>
-          <td style="white-space: nowrap; width: 1%;">
+          <td style="white-space: nowrap; width: 1%;" class="ps-0 pe-0">
             <img 
                 src="../icons/certified-icon-small.ico" 
                 alt="Consigliato"
@@ -115,9 +119,10 @@ function mostra(lista) {
             headerTr.innerHTML = `
             <th> </th>
             <td colspan="2"><strong>Proprietario</strong></td>
-            <td><strong>Tipologia</strong></td>
-            <td><strong>Note</strong></td>
-            <td></td>
+            <td><strong>Autore</strong></td>
+            <td style="white-space: nowrap; width: 1%; background-color: #fafafa; text-align: right;">
+              <button class="btn btn-sm btn-warning" onclick="modifica(${r.Id})">Modifica</button>
+            </td>
           `;
 
             // Riga valori
@@ -126,10 +131,8 @@ function mostra(lista) {
             valueTr.innerHTML = `
             <td></td>
             <td colspan="2">${r.Proprietario || ''}</td>
-            <td>${r.Tipologia || ''}</td>
-            <td>${r.Note || ''}</td>
-            <td style="white-space: nowrap; width: 1%;">
-              <button class="btn btn-sm btn-warning me-1" onclick="modifica(${r.Id})">Modifica</button>
+            <td>${r.Autore}</td>
+            <td style="white-space: nowrap; width: 1%; text-align: right;">
               <button class="btn btn-sm btn-danger" onclick="elimina(${r.Id})">Elimina</button>
             </td>
           `;
