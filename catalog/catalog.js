@@ -4,7 +4,7 @@ let dati = [];
 (async function () {
   setLoading(true, "Chiamo casa madre..");
   await controllaStatoAPI();
-  setLoading(true, "Sto caricando i giochi...");
+  setLoading(true, "Riempio la libreria di giochi...");
   await caricaDati(); 
   setLoading(false);
 
