@@ -144,9 +144,6 @@ function mostra(lista) {
             </td>
             <td colspan="2"><strong>Proprietario</strong></td>
             <td><strong>Autore</strong></td>
-            <td style="white-space: nowrap; width: 1%; background-color: #fafafa; text-align: right;">
-              <button class="btn btn-sm btn-warning" onclick="modifica(${r.Id})">Modifica</button>
-            </td>
           `;
 
             // Riga valori
@@ -156,9 +153,6 @@ function mostra(lista) {
             <td>
             <td colspan="2" class="text-truncate">${r.Proprietario || ''}</td>
             <td class="text-truncate">${r.Autore}</td>
-            <td style="white-space: nowrap; width: 1%; text-align: right;">
-              <button class="btn btn-sm btn-danger" onclick="elimina(${r.Id})">Elimina</button>
-            </td>
           `;
 
             tr.after(valueTr);
@@ -210,7 +204,7 @@ function filtra() {
 
 async function aggiungi() {
     const params = new URLSearchParams({
-        action: "AggiungiNuovo",
+        action: "aggiungiNuovoGioco",
         Nome: document.getElementById("nome").value,
         Proprietario: document.getElementById("proprietario").value,
         TagTipologia: document.getElementById("tag").value
@@ -228,14 +222,17 @@ async function aggiungi() {
 }
 
 
-
-
-async function elimina(riga) {
+async function elimina(id) {
     if (!confirm("Sei sicuro di voler eliminare questa riga?")) return;
     try {
-        await fetch(`${API_URL}?riga=${riga}`, { method: "DELETE" });
+        const url = `${API_URL}?action=cancellaGioco&Id=${encodeURIComponent(id)}`;
+        console.log(url);
+        const res = await fetch(url, { method: "GET" }); // Google Apps Script accetta solo GET
+        const text = await res.text();
+        console.log("Risposta eliminazione:", text);
         caricaDati();
     } catch (error) {
+        console.error(error);
         mostraMessaggioErrore("Errore durante l'eliminazione.");
     }
 }
