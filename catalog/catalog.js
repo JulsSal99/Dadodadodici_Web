@@ -117,7 +117,12 @@ function mostra(lista) {
             const headerTr = document.createElement("tr");
             headerTr.classList.add("dettagli-header");
             headerTr.innerHTML = `
-            <th> </th>
+            <td style="white-space: nowrap; width: 1%; text-align: right;">
+                <button class="btn btn-sm btn-info" onclick='mostraDettagli(${JSON.stringify(r).replace(/'/g, "&apos;")})'>
+                    <img src="../icons/monitor-expand-small.ico" alt="Dettagli" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 4px;" />
+                    Dettagli
+                </button>
+            </td>
             <td colspan="2"><strong>Proprietario</strong></td>
             <td><strong>Autore</strong></td>
             <td style="white-space: nowrap; width: 1%; background-color: #fafafa; text-align: right;">
@@ -129,7 +134,7 @@ function mostra(lista) {
             const valueTr = document.createElement("tr");
             valueTr.classList.add("dettagli-valori");
             valueTr.innerHTML = `
-            <td></td>
+            <td>
             <td colspan="2">${r.Proprietario || ''}</td>
             <td>${r.Autore}</td>
             <td style="white-space: nowrap; width: 1%; text-align: right;">
@@ -152,9 +157,6 @@ function mostra(lista) {
         tbody.appendChild(tr);
     });
 }
-
-
-
 
 /**
  * @description: Filtra i dati in base a una parola generica
@@ -219,26 +221,10 @@ async function elimina(riga) {
     }
 }
 
-async function modifica(riga, nome, proprietario, tag) {
-    const nuovoNome = prompt("Modifica Nome", nome);
-    const nuovoProprietario = prompt("Modifica Proprietario", proprietario);
-    const nuovoTag = prompt("Modifica TagTipologia", tag);
-    if (nuovoNome && nuovoProprietario && nuovoTag) {
-        const aggiornato = {
-            Nome: nuovoNome,
-            Proprietario: nuovoProprietario,
-            TagTipologia: nuovoTag
-        };
-        try {
-            await fetch(`${API_URL}?riga=${riga}`, {
-                method: "PUT",
-                body: JSON.stringify(aggiornato)
-            });
-            caricaDati();
-        } catch (error) {
-            mostraMessaggioErrore("Errore durante la modifica.");
-        }
-    }
+function modifica(id) {
+    // Reindirizza alla pagina di modifica, passando l'id nell'URL
+    window.location.href = `catalogEdit.html?id=${encodeURIComponent(id)}`;
 }
+
 
 caricaDati();

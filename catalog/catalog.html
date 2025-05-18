@@ -20,9 +20,6 @@
   <div id="messaggio-errore" class="alert alert-danger"></div>
 
   <div class="row g-2 mb-4">
-    <div class="col-md-4"><input id="nome" class="form-control" placeholder="Nome" /></div>
-    <div class="col-md-4"><input id="proprietario" class="form-control" placeholder="Proprietario" /></div>
-    <div class="col-md-4"><input id="tag" class="form-control" placeholder="TagTipologia" /></div>
     <div class="col-12">
       <button onclick="aggiungi()" class="btn btn-primary mt-2">Aggiungi</button>
     </div>
@@ -44,7 +41,28 @@
     <tbody id="tabella-body"></tbody>
   </table>
 
+  <!-- Modale Dettagli -->
+  <div class="modal fade" id="modaleDettagli" tabindex="-1" aria-labelledby="modaleDettagliLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modaleDettagliLabel">Dettagli</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+        </div>
+        <div class="modal-body" id="contenuto-modale">
+          <!-- I dettagli saranno inseriti via JS -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <script src="catalog.js" defer></script>
+  <script src="modal-dettagli.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <a target="_blank" href="https://icons8.com/icon/PuZNs3i0Mud1/pegi-18">Pegi 18</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
   <a target="_blank" href="https://icon-icons.com/it/icona/dati-carta-cartella-documento-certificato-premium-qualit%C3%A0/225527">Pegi 18</a> icon by <a target="_blank" href="https://icon-icons.com">icon-icons</a>
 </body>
