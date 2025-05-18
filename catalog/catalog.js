@@ -60,11 +60,35 @@ function mostra(lista) {
         const tr = document.createElement("tr");
         tr.classList.add("riga-principale");
 
+            //                   <td class="pe-0 img-small-box">
+            //   ${r.Consigliato ? '<img src="../icons/certified-icon-small.ico" alt="Consigliato" />' : ''}
+            // </td>
+            // <td class="ps-0 pe-0 img-small-box">
+            //   ${r.Esplicito ? '<img src="../icons/pegi-18-small.png" alt="Esplicito" width="48px" />' : ''}
+            // </td>
+            // <td class="ps-0 img-small-box">
+            //   ${r.FasciaEta ? '<span class="fascia-eta" title="Fascia di età">' + r.FasciaEta + '+</span>' : ''}
+            // </td>
         tr.innerHTML = `
           <td>${r.Titolo}</td>
           <td colspan="3">${r.Autore}</td>
-          <td colspan="2">${r.Proprietario}</td>
           <td>${r.Difficolta}</td>
+          <td style="white-space: nowrap; width: 1%;">
+            <img 
+                src="../icons/certified-icon-small.ico" 
+                alt="Consigliato"
+                style="${r.Consigliato ? '' : 'visibility:hidden'}"
+            />
+            <img 
+                src="../icons/pegi-18-small.png" 
+                alt="Esplicito" 
+                width="48" 
+                style="${r.Esplicito ? '' : 'visibility:hidden'}"
+            />
+            <span class="fascia-eta" style="${r.FasciaEta ? '' : 'visibility:hidden'}" title="Fascia di età">
+                ${r.FasciaEta || ''}+
+            </span>
+          </td>
         `;
 
         tr.addEventListener("click", function (e) {
@@ -89,8 +113,8 @@ function mostra(lista) {
             const headerTr = document.createElement("tr");
             headerTr.classList.add("dettagli-header");
             headerTr.innerHTML = `
-            <td></td>
-            <td colspan="3">Tag</td>
+            <th> </th>
+            <td colspan="2"><strong>Proprietario</strong></td>
             <td><strong>Tipologia</strong></td>
             <td><strong>Note</strong></td>
             <td></td>
@@ -101,15 +125,7 @@ function mostra(lista) {
             valueTr.classList.add("dettagli-valori");
             valueTr.innerHTML = `
             <td></td>
-            <td class="pe-0 img-small-box">
-              ${r.Consigliato ? '<img src="../icons/certified-icon-small.ico" alt="Consigliato" />' : ''}
-            </td>
-            <td class="ps-0 pe-0 img-small-box">
-              ${r.Esplicito ? '<img src="../icons/pegi-18-small.png" alt="Esplicito" width="48px" />' : ''}
-            </td>
-            <td class="ps-0 img-small-box">
-              ${r.FasciaEta ? '<span class="fascia-eta" title="Fascia di età">' + r.FasciaEta + '+</span>' : ''}
-            </td>
+            <td colspan="2">${r.Proprietario || ''}</td>
             <td>${r.Tipologia || ''}</td>
             <td>${r.Note || ''}</td>
             <td style="white-space: nowrap; width: 1%;">
