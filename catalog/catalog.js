@@ -1,8 +1,27 @@
 console.log("v01: caricata 09/05/2025 21:16");
 const API_URL = "https://script.google.com/macros/s/AKfycbygmykV1SAIWmnG43mL4dEBpj2PEfkijlmCsDGBiAQ0loGfQ_iHRkB6AaQ_E3NC---JSg/exec";
 let dati = [];
-caricaDati();
-controllaStatoAPI(); // <-- aggiunto
+(async function () {
+  setLoading(true, "Chiamo casa madre..");
+  await controllaStatoAPI();
+  setLoading(true, "Sto caricando i giochi...");
+  await caricaDati(); 
+  setLoading(false);
+
+  const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent);
+  if (isMobile) {
+    console.log("Sei su un dispositivo mobile");
+  }
+})();
+
+function setLoading(isLoading, testo = "Caricamento...") {
+  const loader = document.getElementById("loader");
+  const loaderText = document.getElementById("loader-text");
+
+  loader.style.display = isLoading ? "flex" : "none";
+  if (testo) loaderText.textContent = testo;
+}
+
 
 
 async function controllaStatoAPI() {
@@ -74,8 +93,8 @@ function mostra(lista) {
             // <td><strong>Note</strong></td>
             // <td>${r.Note || ''}</td>
         tr.innerHTML = `
-          <td>${r.Titolo}</td>
-          <td colspan="2">${r.Tipologia || ''}</td>
+          <td class="text-truncate">${r.Titolo}</td>
+          <td class="text-truncate" colspan="2">${r.Tipologia || ''}</td>
           <td>${r.Difficolta}</td>
           <td style="white-space: nowrap; width: 1%;" class="ps-0 pe-0">
             <img 
@@ -117,7 +136,7 @@ function mostra(lista) {
             const headerTr = document.createElement("tr");
             headerTr.classList.add("dettagli-header");
             headerTr.innerHTML = `
-            <td style="white-space: nowrap; width: 1%; text-align: right;">
+            <td style="white-space: nowrap; width: 1%; text-align: left;">
                 <button class="btn btn-sm btn-info" onclick='mostraDettagli(${JSON.stringify(r).replace(/'/g, "&apos;")})'>
                     <img src="../icons/monitor-expand-small.ico" alt="Dettagli" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 4px;" />
                     Dettagli
@@ -135,8 +154,8 @@ function mostra(lista) {
             valueTr.classList.add("dettagli-valori");
             valueTr.innerHTML = `
             <td>
-            <td colspan="2">${r.Proprietario || ''}</td>
-            <td>${r.Autore}</td>
+            <td colspan="2" class="text-truncate">${r.Proprietario || ''}</td>
+            <td class="text-truncate">${r.Autore}</td>
             <td style="white-space: nowrap; width: 1%; text-align: right;">
               <button class="btn btn-sm btn-danger" onclick="elimina(${r.Id})">Elimina</button>
             </td>
