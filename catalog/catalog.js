@@ -23,7 +23,6 @@ function setLoading(isLoading, testo = "Caricamento...") {
 }
 
 
-
 async function controllaStatoAPI() {
     const stato = document.getElementById("stato-api");
     try {
@@ -137,7 +136,7 @@ function mostra(lista) {
             headerTr.classList.add("dettagli-header");
             headerTr.innerHTML = `
             <td style="white-space: nowrap; width: 1%; text-align: left;">
-                <button class="btn btn-sm btn-info" onclick='mostraDettagli(${JSON.stringify(r).replace(/'/g, "&apos;")})'>
+                <button class="btn btn-sm btn-info" onclick='mostraDettagli(${r.Id})'>
                     <img src="../icons/monitor-expand-small.ico" alt="Dettagli" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 4px;" />
                     Dettagli
                 </button>
@@ -221,26 +220,7 @@ async function aggiungi() {
     }
 }
 
-
-async function elimina(id) {
-    if (!confirm("Sei sicuro di voler eliminare questa riga?")) return;
-    try {
-        const url = `${API_URL}?action=cancellaGioco&Id=${encodeURIComponent(id)}`;
-        console.log(url);
-        const res = await fetch(url, { method: "GET" }); // Google Apps Script accetta solo GET
-        const text = await res.text();
-        console.log("Risposta eliminazione:", text);
-        caricaDati();
-    } catch (error) {
-        console.error(error);
-        mostraMessaggioErrore("Errore durante l'eliminazione.");
-    }
-}
-
 function modifica(id) {
     // Reindirizza alla pagina di modifica, passando l'id nell'URL
     window.location.href = `catalogEdit.html?id=${encodeURIComponent(id)}`;
 }
-
-
-caricaDati();
