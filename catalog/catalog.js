@@ -42,8 +42,21 @@ async function controllaStatoAPI() {
 }
 
 function mostraMessaggioErrore(testo) {
-    const toastEl = document.getElementById('toastErrore');
+    const toastEl = document.getElementById('toast-head');
+    toastEl.classList.add('bg-danger');
+    toastEl.setAttribute('aria-live', 'assertive');
     const toastBody = document.getElementById('testoToastErrore');
+    toastBody.textContent = testo;
+
+    const toast = new bootstrap.Toast(toastEl, { delay: 5000 });
+    toast.show();
+}
+
+function mostraMessaggioSuccesso(testo) {
+    const toastEl = document.getElementById('toast-head');
+    toastEl.classList.add('bg-success');
+    toastEl.setAttribute('aria-live', 'polite');
+    const toastBody = document.getElementById('testoToast');
     toastBody.textContent = testo;
 
     const toast = new bootstrap.Toast(toastEl, { delay: 5000 });
@@ -88,11 +101,13 @@ function mostra(lista) {
             <img 
                 src="../icons/certified-icon-small.ico" 
                 alt="Consigliato"
+                title="Consigliato"
                 style="${r.Consigliato ? '' : 'visibility:hidden'}"
             />
             <img 
                 src="../icons/pegi-18-small.png" 
                 alt="Esplicito" 
+                title="Esplicito"
                 width="48" 
                 style="${r.Esplicito ? '' : 'visibility:hidden'}"
             />

@@ -3,6 +3,7 @@ async function creaGioco() {
     document.getElementById("modaleDettagliLabel").textContent = `Crea gioco`;
 
     const initGioco = {
+        Id: undefined,
         Note: undefined,
         Titolo: undefined,
         Autore: undefined,
@@ -75,7 +76,7 @@ async function salva(id, form) {
     };
 
     try {
-        const url = `${API_URL}?action=aggiornaGioco`;
+        const url = `${API_URL}?action=salvaGioco`;
         const formData = new URLSearchParams();
         formData.append("payload", JSON.stringify(aggiornato));
 
@@ -90,6 +91,7 @@ async function salva(id, form) {
         const modalEl = bootstrap.Modal.getInstance(document.getElementById('modaleDettagli'));
         modalEl.hide();
         caricaDati(); // Ricarica i dati in tabella
+        mostraMessaggioSuccesso("Verso l'infinito e...");
     } catch (error) {
         mostraMessaggioErrore("Errore durante il salvataggio.");
     } finally {
@@ -121,8 +123,10 @@ function creaCampiInput(contenuto, gioco, modificabile){
         ${creaInput("Tipologia", "Tipologia", gioco.Tipologia)}
         ${creaInput("Difficolta", "Difficolta", gioco.Difficolta)}
         ${creaInput("Fascia Età", "FasciaEta", gioco.FasciaEta)}
-        ${creaCheckbox("Consigliato", "Consigliato", gioco.Consigliato)}
-        ${creaCheckbox("Esplicito", "Esplicito", gioco.Esplicito)}
+        <div class="row">
+          ${creaCheckbox("Consigliato", "Consigliato", gioco.Consigliato, "../icons/certified-icon-small.ico")}
+          ${creaCheckbox("Esplicito", "Esplicito", gioco.Esplicito, "../icons/pegi-18-small.png")}
+        </div>
         ${creaInput("Note", "Note", gioco.Note)}
         <div class="mt-3 d-flex justify-content-end gap-2">
           <button type="button" class="btn btn-warning" id="modificaBtn">Modifica</button>
@@ -153,8 +157,10 @@ function creaCampiInput(contenuto, gioco, modificabile){
             setLoading(false);
         });
     } else {
+        form.querySelectorAll("input").forEach(input => input.disabled = false);
         modificaBtn.classList.add("d-none");
         eliminaBtn.classList.add("d-none");
+        salvaBtn.classList.remove("d-none");
     }
 }
 
@@ -167,12 +173,23 @@ function creaInput(label, name, value = "") {
     `;
 }
 
-function creaCheckbox(label, name, checked = false) {
+function creaCheckbox(label, name, checked = false, imgPath = null) {
+  if (!imgPath) {
     return `
       <div class="form-check mb-2">
         <input type="checkbox" class="form-check-input" name="${name}" ${checked ? "checked" : ""} disabled>
         <label class="form-check-label"><strong>${label}</strong></label>
       </div>
     `;
+  } else {
+    return `
+      <div class="col-6 mb-2 d-flex align-items-center">
+        <input type="checkbox" class="d-none" id="${name}" name="${name}" ${checked ? "checked" : ""}>
+        <label for="${name}" class="checkbox-icon-wrapper me-2">
+          <img src="${imgPath}" alt="${name}" class="checkbox-icon" />
+        </label>
+        <label class="form-check-label mb-0"><strong>${label}</strong></label>
+      </div>
+    `;
+  }
 }
-  

@@ -62,3 +62,28 @@
         cursor: pointer;
         transition: width 0.3s ease;
     }
+
+
+    /* Mostra il cursore a mano solo sui checkbox con immagine */
+    .checkbox-icon-wrapper {
+        cursor: pointer;
+    }
+
+    /* Applica stile all'immagine */
+    .checkbox-icon {
+        width: 4em;
+        height: 4em;
+        transition: filter 0.2s ease;
+        user-select: none;
+    }
+
+    /* Quando il checkbox è deselezionato, rendi l'immagine grigia */
+    input[type="checkbox"]:not(:checked) + .checkbox-icon-wrapper .checkbox-icon {
+        filter: grayscale(100%);
+        opacity: 0.6;
+    }
+
+    /* Hover effetto opzionale */
+    .checkbox-icon-wrapper:hover .checkbox-icon {
+        filter: brightness(0.9);
+    }
