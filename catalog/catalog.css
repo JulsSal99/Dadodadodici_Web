@@ -23,13 +23,17 @@
         color: #555;
     }
 
-    /* Animazioni di comparsa e scomparsa */
     .dettagli-header, .dettagli-valori {
-        overflow: hidden;
-        max-height: 0;
+        transform-origin: top;
+        transform: scaleY(0);
         opacity: 0;
-        transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
-        will-change: max-height, opacity;
+        transition: transform 0.35s ease, opacity 0.35s ease;
+        will-change: transform, opacity;
+    }
+
+    .dettagli-header.show, .dettagli-valori.show {
+        transform: scaleY(1);
+        opacity: 1;
     }
 
     .dettagli-header.show, .dettagli-valori.show {
@@ -64,21 +68,21 @@
     }
 
 
-.checkbox-button {
-  width: 40px;
-  height: 40px;
-  background-size: cover;
-  background-position: center;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: filter 0.2s, opacity 0.2s;
-  display: inline-block;
-}
+    .checkbox-button {
+        width: 4em;
+        height: 4em;
+        background-size: cover;
+        background-position: center;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: filter 0.2s, opacity 0.2s;
+        display: inline-block;
+    }
 
-/* Grigio se deselezionato */
-input[type="checkbox"]:not(:checked) + .checkbox-button {
-  filter: grayscale(100%);
-  opacity: 0.6;
-}
+    /* Grigio se deselezionato */
+    input[type="checkbox"]:not(:checked) + .checkbox-button {
+        filter: grayscale(100%);
+        opacity: 0.6;
+    }
 
 

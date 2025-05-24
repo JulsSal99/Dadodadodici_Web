@@ -120,13 +120,12 @@ function mostra(lista) {
         tr.addEventListener("click", function (e) {
             if (e.target.tagName === "BUTTON") return;
 
+            // Se la riga dettagli è già aperta subito dopo questa riga, chiudila
             const next = tr.nextElementSibling;
             if (next && next.classList.contains("dettagli-header")) {
-                // Animazione chiusura: togli classe show
                 next.classList.remove("show");
                 next.nextElementSibling.classList.remove("show");
 
-                // Rimuovi dopo la durata della transizione
                 setTimeout(() => {
                     if (next.nextElementSibling) next.nextElementSibling.remove();
                     next.remove();
@@ -135,9 +134,21 @@ function mostra(lista) {
                 return;
             }
 
-            // Riga intestazioni
+            // Chiudi tutte le altre righe dettagli aperte
+            const dettagliHeaders = tbody.querySelectorAll("tr.dettagli-header");
+            dettagliHeaders.forEach(header => {
+                header.classList.remove("show");
+                const valTr = header.nextElementSibling;
+                if (valTr) valTr.classList.remove("show");
+                setTimeout(() => {
+                    if (valTr) valTr.remove();
+                    header.remove();
+                }, 400);
+            });
+
+            // Crea le righe dettagli
             const headerTr = document.createElement("tr");
-            headerTr.classList.add("dettagli-valori");
+            headerTr.classList.add("dettagli-header");
             headerTr.innerHTML = `
                 <td rowspan="2" style="white-space: nowrap; width: 1%; text-align: left;">
                     <button class="btn btn-sm btn-info" onclick='mostraDettagli(${r.Id})'>
@@ -148,21 +159,20 @@ function mostra(lista) {
                 <td colspan="3" class="text-truncate"><b>Proprietario: </b> ${r.Proprietario || ''}</td>
             `;
 
-            // Riga valori
             const valueTr = document.createElement("tr");
             valueTr.classList.add("dettagli-valori");
             valueTr.innerHTML = `
-                <td colspan="3" class="text-truncate"><b>Autore: </b>${r.Autore}</td>
+                <td colspan="3" class="text-truncate"><b>Autore: </b>${r.Autore || ''}</td>
             `;
 
             tr.after(valueTr);
             tr.after(headerTr);
 
-            // Forza il reflow per attivare la transizione
+            // Forza reflow per animazioni
             headerTr.offsetHeight;
             valueTr.offsetHeight;
 
-            // Aggiungi classe show per animare l'apparizione
+            // Aggiungi classe per mostrare (animazione)
             headerTr.classList.add("show");
             valueTr.classList.add("show");
         });
@@ -170,6 +180,7 @@ function mostra(lista) {
         tbody.appendChild(tr);
     });
 }
+
 
 /**
  * @description: Filtra i dati in base a una parola generica
