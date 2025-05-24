@@ -64,26 +64,21 @@
     }
 
 
-    /* Mostra il cursore a mano solo sui checkbox con immagine */
-    .checkbox-icon-wrapper {
-        cursor: pointer;
-    }
+.checkbox-button {
+  width: 40px;
+  height: 40px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: filter 0.2s, opacity 0.2s;
+  display: inline-block;
+}
 
-    /* Applica stile all'immagine */
-    .checkbox-icon {
-        width: 4em;
-        height: 4em;
-        transition: filter 0.2s ease;
-        user-select: none;
-    }
+/* Grigio se deselezionato */
+input[type="checkbox"]:not(:checked) + .checkbox-button {
+  filter: grayscale(100%);
+  opacity: 0.6;
+}
 
-    /* Quando il checkbox è deselezionato, rendi l'immagine grigia */
-    input[type="checkbox"]:not(:checked) + .checkbox-icon-wrapper .checkbox-icon {
-        filter: grayscale(100%);
-        opacity: 0.6;
-    }
 
-    /* Hover effetto opzionale */
-    .checkbox-icon-wrapper:hover .checkbox-icon {
-        filter: brightness(0.9);
-    }

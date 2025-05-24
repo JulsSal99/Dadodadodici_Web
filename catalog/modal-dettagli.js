@@ -182,14 +182,13 @@ function creaCheckbox(label, name, checked = false, imgPath = null) {
       </div>
     `;
   } else {
-    return `
-      <div class="col-6 mb-2 d-flex align-items-center">
-        <input type="checkbox" class="d-none" id="${name}" name="${name}" ${checked ? "checked" : ""}>
-        <label for="${name}" class="checkbox-icon-wrapper me-2">
-          <img src="${imgPath}" alt="${name}" class="checkbox-icon" />
-        </label>
+      return `
+      <div class="d-flex align-items-center" style="width: calc(50% - 1rem);">
+        <input type="checkbox" class="d-none" id="${name}" name="${name}" ${checked ? "checked" : ""} disabled>
+        <label for="${name}" class="checkbox-button me-2" style="background-image: url('${imgPath}');"></label> 
         <label class="form-check-label mb-0"><strong>${label}</strong></label>
       </div>
-    `;
+  `;
+
   }
 }
