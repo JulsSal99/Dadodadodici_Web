@@ -42,11 +42,14 @@ async function controllaStatoAPI() {
 }
 
 function mostraMessaggioErrore(testo) {
-    const msg = document.getElementById("messaggio-errore");
-    msg.textContent = testo;
-    msg.style.display = "block";
-    setTimeout(() => msg.style.display = "none", 5000);
+    const toastEl = document.getElementById('toastErrore');
+    const toastBody = document.getElementById('testoToastErrore');
+    toastBody.textContent = testo;
+
+    const toast = new bootstrap.Toast(toastEl, { delay: 5000 });
+    toast.show();
 }
+
 
 /**
  * @description carica i dati all'accesso
@@ -77,24 +80,10 @@ function mostra(lista) {
     lista.forEach(r => {
         const tr = document.createElement("tr");
         tr.classList.add("riga-principale");
-
-            //                   <td class="pe-0 img-small-box">
-            //   ${r.Consigliato ? '<img src="../icons/certified-icon-small.ico" alt="Consigliato" />' : ''}
-            // </td>
-            // <td class="ps-0 pe-0 img-small-box">
-            //   ${r.Esplicito ? '<img src="../icons/pegi-18-small.png" alt="Esplicito" width="48px" />' : ''}
-            // </td>
-            // <td class="ps-0 img-small-box">
-            //   ${r.FasciaEta ? '<span class="fascia-eta" title="Fascia di età">' + r.FasciaEta + '+</span>' : ''}
-            // </td>
-
-            
-            // <td><strong>Note</strong></td>
-            // <td>${r.Note || ''}</td>
         tr.innerHTML = `
           <td class="text-truncate">${r.Titolo}</td>
-          <td class="text-truncate" colspan="2">${r.Tipologia || ''}</td>
-          <td>${r.Difficolta}</td>
+          <td class="text-truncate">${r.Tipologia || ''}</td>
+          <td class="text-truncate">${r.Difficolta}</td>
           <td style="white-space: nowrap; width: 1%;" class="ps-0 pe-0">
             <img 
                 src="../icons/certified-icon-small.ico" 
@@ -133,26 +122,23 @@ function mostra(lista) {
 
             // Riga intestazioni
             const headerTr = document.createElement("tr");
-            headerTr.classList.add("dettagli-header");
+            headerTr.classList.add("dettagli-valori");
             headerTr.innerHTML = `
-            <td style="white-space: nowrap; width: 1%; text-align: left;">
-                <button class="btn btn-sm btn-info" onclick='mostraDettagli(${r.Id})'>
-                    <img src="../icons/monitor-expand-small.ico" alt="Dettagli" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 4px;" />
-                    Dettagli
-                </button>
-            </td>
-            <td colspan="2"><strong>Proprietario</strong></td>
-            <td><strong>Autore</strong></td>
-          `;
+                <td rowspan="2" style="white-space: nowrap; width: 1%; text-align: left;">
+                    <button class="btn btn-sm btn-info" onclick='mostraDettagli(${r.Id})'>
+                        <img src="../icons/monitor-expand-small.ico" alt="Dettagli" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 4px;" />
+                        Dettagli
+                    </button>
+                </td>
+                <td colspan="3" class="text-truncate"><b>Proprietario: </b> ${r.Proprietario || ''}</td>
+            `;
 
             // Riga valori
             const valueTr = document.createElement("tr");
             valueTr.classList.add("dettagli-valori");
             valueTr.innerHTML = `
-            <td>
-            <td colspan="2" class="text-truncate">${r.Proprietario || ''}</td>
-            <td class="text-truncate">${r.Autore}</td>
-          `;
+                <td colspan="3" class="text-truncate"><b>Autore: </b>${r.Autore}</td>
+            `;
 
             tr.after(valueTr);
             tr.after(headerTr);
@@ -202,22 +188,7 @@ function filtra() {
 }
 
 async function aggiungi() {
-    const params = new URLSearchParams({
-        action: "aggiungiNuovoGioco",
-        Nome: document.getElementById("nome").value,
-        Proprietario: document.getElementById("proprietario").value,
-        TagTipologia: document.getElementById("tag").value
-    });
-
-    try {
-        const res = await fetch(API_URL + "?" + params.toString());
-        const data = await res.json();
-        console.log("Risposta:", data);
-        if (data.success) caricaDati();
-    } catch (error) {
-        console.error("Errore:", error);
-        mostraMessaggioErrore("Errore durante l'aggiunta del gioco.");
-    }
+    window.location.href = `catalogEdit.html`;
 }
 
 function modifica(id) {

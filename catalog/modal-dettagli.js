@@ -1,3 +1,24 @@
+async function creaGioco() {
+    const contenuto = document.getElementById("contenuto-modale");
+    document.getElementById("modaleDettagliLabel").textContent = `Crea gioco`;
+
+    const initGioco = {
+        Note: undefined,
+        Titolo: undefined,
+        Autore: undefined,
+        Proprietario: undefined,
+        Tipologia: undefined,
+        Difficolta: undefined,
+        FasciaEta: undefined,
+        Consigliato: undefined,
+        Esplicito: undefined
+    };
+
+    creaCampiInput(contenuto, initGioco, true);
+
+    new bootstrap.Modal(document.getElementById('modaleDettagli')).show();
+}
+
 async function mostraDettagli(Id) {
     const record = await genericCaricaGioco(Id);
     if (!record || !record.success || !record.record) {
@@ -10,46 +31,7 @@ async function mostraDettagli(Id) {
 
     document.getElementById("modaleDettagliLabel").textContent = `Dettagli: ${gioco.Titolo} (${gioco.Autore})`;
 
-    contenuto.innerHTML = `
-      <form id="formDettagli">
-        ${creaInput("Note", "Note", gioco.Note)}
-        ${creaInput("Tag Tipologia", "Titolo", gioco.Titolo)}
-        ${creaInput("Autore", "Autore", gioco.Autore)}
-        ${creaInput("Tipologia", "Tipologia", gioco.Tipologia)}
-        ${creaInput("Difficolta", "Difficolta", gioco.Difficolta)}
-        ${creaInput("Fascia Età", "FasciaEta", gioco.FasciaEta)}
-        ${creaCheckbox("Consigliato", "Consigliato", gioco.Consigliato)}
-        ${creaCheckbox("Esplicito", "Esplicito", gioco.Esplicito)}
-        <div class="mt-3 d-flex justify-content-end gap-2">
-          <button type="button" class="btn btn-warning" id="modificaBtn">Modifica</button>
-          <button type="button" class="btn btn-sm btn-danger" id="eliminaBtn">Elimina</button>
-          <button type="button" class="btn btn-success d-none" id="salvaBtn">Salva</button>
-        </div>
-      </form>
-    `;
-
-    const form = contenuto.querySelector("#formDettagli");
-    const modificaBtn = form.querySelector("#modificaBtn");
-    const salvaBtn = form.querySelector("#salvaBtn");
-    const eliminaBtn = form.querySelector("#eliminaBtn");
-
-    modificaBtn.addEventListener("click", () => {
-        form.querySelectorAll("input").forEach(input => input.disabled = false);
-        modificaBtn.classList.add("d-none");
-        salvaBtn.classList.remove("d-none");
-    });
-
-    eliminaBtn.addEventListener("click", async () => {
-        setLoading(true, "Sterminando i dalek..");
-        await elimina(gioco.Id); // Id corretto
-        setLoading(false);
-    });
-
-    salvaBtn.addEventListener("click", async () => {
-        setLoading(true, "Salvando la principessa..");
-        await salva(gioco); // aggiorna con i nuovi valori se necessario
-        setLoading(false);
-    });
+    creaCampiInput(contenuto, gioco, false);
 
     new bootstrap.Modal(document.getElementById('modaleDettagli')).show();
 }
@@ -77,12 +59,14 @@ async function genericCaricaGioco(id) {
     }
 }
 
-async function salva(id) {
+async function salva(id, form) {
+    setLoading(true, "Salvando la principessa..");
     const aggiornato = {
-        Id: record.Id,
+        Id: id,
         Note: form.Note.value,
         Titolo: form.Titolo.value,
         Autore: form.Autore.value,
+        Proprietario: form.Proprietario?.value || "",
         Tipologia: form.Tipologia.value,
         Difficolta: form.Difficolta.value,
         FasciaEta: form.FasciaEta.value,
@@ -91,15 +75,25 @@ async function salva(id) {
     };
 
     try {
-        await fetch(`${API_URL}?riga=${record.riga}`, {
-            method: "PUT",
-            body: JSON.stringify(aggiornato)
+        const url = `${API_URL}?action=aggiornaGioco`;
+        const formData = new URLSearchParams();
+        formData.append("payload", JSON.stringify(aggiornato));
+
+        await fetch(url, {
+            method: "POST",
+            body: formData,
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
         });
+
         const modalEl = bootstrap.Modal.getInstance(document.getElementById('modaleDettagli'));
         modalEl.hide();
         caricaDati(); // Ricarica i dati in tabella
     } catch (error) {
         mostraMessaggioErrore("Errore durante il salvataggio.");
+    } finally {
+      setLoading(false);
     };
 }
 
@@ -115,6 +109,52 @@ async function elimina(id) {
     } catch (error) {
         console.error(error);
         mostraMessaggioErrore("Errore durante l'eliminazione.");
+    }
+}
+
+function creaCampiInput(contenuto, gioco, modificabile){
+    contenuto.innerHTML = `
+      <form id="formDettagli">
+        ${creaInput("Titolo", "Titolo", gioco.Titolo)}
+        ${creaInput("Autore", "Autore", gioco.Autore)}
+        ${creaInput("Proprietario", "Autore", gioco.Proprietario)}
+        ${creaInput("Tipologia", "Tipologia", gioco.Tipologia)}
+        ${creaInput("Difficolta", "Difficolta", gioco.Difficolta)}
+        ${creaInput("Fascia Età", "FasciaEta", gioco.FasciaEta)}
+        ${creaCheckbox("Consigliato", "Consigliato", gioco.Consigliato)}
+        ${creaCheckbox("Esplicito", "Esplicito", gioco.Esplicito)}
+        ${creaInput("Note", "Note", gioco.Note)}
+        <div class="mt-3 d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-warning" id="modificaBtn">Modifica</button>
+          <button type="button" class="btn btn-sm btn-danger" id="eliminaBtn">Elimina</button>
+          <button type="button" class="btn btn-success d-none" id="salvaBtn">Salva</button>
+        </div>
+      </form>
+    `;
+
+    
+    const form = contenuto.querySelector("#formDettagli");
+    const salvaBtn = form.querySelector("#salvaBtn");
+    salvaBtn.addEventListener("click", async () => {
+        await salva(gioco.Id, form); // Passa il form
+    });
+
+    const modificaBtn = form.querySelector("#modificaBtn")
+    const eliminaBtn = form.querySelector("#eliminaBtn");
+    if (!modificabile){
+        modificaBtn.addEventListener("click", () => {
+            form.querySelectorAll("input").forEach(input => input.disabled = false);
+            modificaBtn.classList.add("d-none");
+            salvaBtn.classList.remove("d-none");
+        });
+        eliminaBtn.addEventListener("click", async () => {
+            setLoading(true, "Sterminando i dalek..");
+            await elimina(gioco.Id); // Id corretto
+            setLoading(false);
+        });
+    } else {
+        modificaBtn.classList.add("d-none");
+        eliminaBtn.classList.add("d-none");
     }
 }
 
