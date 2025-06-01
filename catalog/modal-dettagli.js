@@ -80,7 +80,7 @@ async function salva(id, form) {
         const formData = new URLSearchParams();
         formData.append("payload", JSON.stringify(aggiornato));
 
-        await fetch(url, {
+        const response = await fetch(url, {
             method: "POST",
             body: formData,
             headers: {
@@ -88,15 +88,21 @@ async function salva(id, form) {
             }
         });
 
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.errore || "Errore sconosciuto dal server.");
+        }
+
         const modalEl = bootstrap.Modal.getInstance(document.getElementById('modaleDettagli'));
         modalEl.hide();
         caricaDati(); // Ricarica i dati in tabella
         mostraMessaggioSuccesso("Verso l'infinito e...");
     } catch (error) {
-        mostraMessaggioErrore("Errore durante il salvataggio.");
+        mostraMessaggioErrore("Errore durante il salvataggio: " + error.message);
     } finally {
-      setLoading(false);
-    };
+        setLoading(false);
+    }
 }
 
 async function elimina(id) {
@@ -107,10 +113,14 @@ async function elimina(id) {
         const res = await fetch(url, { method: "GET" }); // Google Apps Script accetta solo GET
         const text = await res.text();
         console.log("Risposta eliminazione:", text);
+        const modalEl = bootstrap.Modal.getInstance(document.getElementById('modaleDettagli'));
+        modalEl.hide();
         caricaDati();
     } catch (error) {
         console.error(error);
         mostraMessaggioErrore("Errore durante l'eliminazione.");
+    } finally {
+        setLoading(false);
     }
 }
 
