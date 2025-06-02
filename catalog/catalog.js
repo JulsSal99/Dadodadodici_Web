@@ -99,8 +99,16 @@ function mostra(lista) {
         const tr = document.createElement("tr");
         tr.classList.add("riga-principale");
         tr.innerHTML = `
-        <td class="text-truncate">${r.Titolo}</td>
-        <td class="text-truncate">${r.Tipologia || ''}</td>
+        <td>
+            <div style="white-space: nowrap; overflow-x: auto;">
+                ${r.Titolo}
+            <div>
+        </td>
+        <td>
+            <div style="white-space: nowrap; overflow-x: auto;">
+                ${r.Tipologia || ''}
+            <div>
+        </td>
         <td class="text-truncate">${r.Difficolta}</td>
         <td class="ps-0 pe-2 text-end" style="white-space: nowrap; width: 1%;">
             <img 
@@ -151,24 +159,36 @@ function mostra(lista) {
                 }, 400);
             });
 
-            // Crea le righe dettagli
+
             const headerTr = document.createElement("tr");
             headerTr.classList.add("dettagli-header");
             headerTr.innerHTML = `
-                <td rowspan="2" style="white-space: nowrap; width: 1%; text-align: left;">
-                    <button class="btn btn-sm btn-info" onclick='mostraDettagli(${r.Id})'>
-                        <img src="../icons/monitor-expand-small.ico" alt="Dettagli" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 4px;" />
-                        Dettagli
-                    </button>
-                </td>
-                <td colspan="3" class="text-truncate"><b>Proprietario: </b> ${r.Proprietario || ''}</td>
+            <td colspan="100%" class="p-2">
+                <div class="d-flex align-items-start gap-3">
+                <button class="btn btn-sm btn-info mt-1" onclick='mostraDettagli(${r.Id})'>
+                    <img src="../icons/monitor-expand-small.ico" alt="Dettagli"
+                        style="width: 16px; height: 16px; vertical-align: middle; margin-right: 4px;" />
+                    Dettagli
+                </button>
+                <div class="d-flex flex-column">
+                    <div class="d-flex">
+                    <div class="me-2 fw-bold" style="min-width: 100px;">Proprietario:</div>
+                    <div class="text-truncate">${r.Proprietario || ''}</div>
+                    </div>
+                    <div class="d-flex">
+                    <div class="me-2 fw-bold" style="min-width: 100px;">Autore:</div>
+                    <div class="text-truncate">${r.Autore || ''}</div>
+                    </div>
+                </div>
+                </div>
+            </td>
             `;
+
+
+
 
             const valueTr = document.createElement("tr");
             valueTr.classList.add("dettagli-valori");
-            valueTr.innerHTML = `
-                <td colspan="3" class="text-truncate"><b>Autore: </b>${r.Autore || ''}</td>
-            `;
 
             tr.after(valueTr);
             tr.after(headerTr);
