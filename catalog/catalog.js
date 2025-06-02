@@ -2,8 +2,6 @@ console.log("v01: caricata 09/05/2025 21:16");
 const API_URL = "https://script.google.com/macros/s/AKfycbygmykV1SAIWmnG43mL4dEBpj2PEfkijlmCsDGBiAQ0loGfQ_iHRkB6AaQ_E3NC---JSg/exec";
 let dati = [];
 (async function () {
-  setLoading(true, "Chiamo casa madre..");
-  await controllaStatoAPI();
   setLoading(true, "Riempio la libreria di giochi...");
   await caricaDati(); 
   setLoading(false);
@@ -30,14 +28,14 @@ async function controllaStatoAPI() {
         if (!res.ok) throw new Error("Errore");
         const data = await res.json();
         if (data.version) {
-            stato.textContent = "🟢";
-            stato.title = `API OK - Versione ${data.version}`;
+            // stato.textContent = "🟢";
+            // stato.title = `API OK - Versione ${data.version}`;
         } else {
             throw new Error("Formato inatteso");
         }
     } catch (e) {
-        stato.textContent = "🔴";
-        stato.title = "Errore nel contattare l'API";
+        // stato.textContent = "🔴";
+        // stato.title = "Errore nel contattare l'API";
     }
 }
 
@@ -76,8 +74,15 @@ async function caricaDati() {
         dati = dati.map((r, i) => ({ ...r, riga: i + 2 }));
         mostra(dati);
     } catch (error) {
-        console.error("Errore durante il caricamento dati:", error);
-        mostraMessaggioErrore("Errore: impossibile contattare il server. Riprova più tardi.");
+        try {
+            setLoading(true, "Chiamo casa madre..");
+            await controllaStatoAPI(); 
+            console.error("Errore durante il caricamento dati:", error);
+            mostraMessaggioErrore("Errore: impossibile contattare il server. Riprova più tardi.");
+        } catch (apiErr) {
+            console.error("Controllo stato API fallito:", apiErr);
+            mostraMessaggioErrore("Errore: impossibile contattare il server. Riprova più tardi.");
+        }
     }
 }
 
@@ -94,10 +99,10 @@ function mostra(lista) {
         const tr = document.createElement("tr");
         tr.classList.add("riga-principale");
         tr.innerHTML = `
-          <td class="text-truncate">${r.Titolo}</td>
-          <td class="text-truncate">${r.Tipologia || ''}</td>
-          <td class="text-truncate">${r.Difficolta}</td>
-          <td style="white-space: nowrap; width: 1%;" class="ps-0 pe-0">
+        <td class="text-truncate">${r.Titolo}</td>
+        <td class="text-truncate">${r.Tipologia || ''}</td>
+        <td class="text-truncate">${r.Difficolta}</td>
+        <td class="ps-0 pe-2 text-end" style="white-space: nowrap; width: 1%;">
             <img 
                 src="../icons/certified-icon-small.ico" 
                 alt="Consigliato"
@@ -114,7 +119,7 @@ function mostra(lista) {
             <span class="fascia-eta" style="${r.FasciaEta ? '' : 'visibility:hidden'}" title="Fascia di età">
                 ${r.FasciaEta || ''}+
             </span>
-          </td>
+        </td>
         `;
 
         tr.addEventListener("click", function (e) {

@@ -127,12 +127,26 @@ async function elimina(id) {
 function creaCampiInput(contenuto, gioco, modificabile){
     contenuto.innerHTML = `
       <form id="formDettagli">
-        ${creaInput("Titolo", "Titolo", gioco.Titolo)}
-        ${creaInput("Autore", "Autore", gioco.Autore)}
-        ${creaInput("Proprietario", "Autore", gioco.Proprietario)}
+        ${creaInput("Titolo", "Titolo", gioco.Titolo, {
+            type: "string",
+            required: true,
+            max: 100,
+            placeholder: "--titolo--"
+        })}
+        ${creaInput("Autore", "Autore", gioco.Autore, {
+            type: "string",
+            max: 50,
+            placeholder: "--autore--"
+        })}
+        ${creaInput("Proprietario", "Proprietario", gioco.Proprietario)}
         ${creaInput("Tipologia", "Tipologia", gioco.Tipologia)}
         ${creaInput("Difficolta", "Difficolta", gioco.Difficolta)}
-        ${creaInput("Fascia Età", "FasciaEta", gioco.FasciaEta)}
+        ${creaInput("Fascia Età", "FasciaEta", gioco.FasciaEta, {
+            type: "number",
+            min: 0,
+            max: 2,
+            placeholder: "--eta--"
+        })}
         <div class="row">
           ${creaCheckbox("Consigliato", "Consigliato", gioco.Consigliato, "../icons/certified-icon-small.ico")}
           ${creaCheckbox("Esplicito", "Esplicito", gioco.Esplicito, "../icons/pegi-18-small.png")}
@@ -174,13 +188,35 @@ function creaCampiInput(contenuto, gioco, modificabile){
     }
 }
 
-function creaInput(label, name, value = "") {
-    return `
-      <div class="mb-2">
-        <label class="form-label"><strong>${label}</strong></label>
-        <input type="text" class="form-control" name="${name}" value="${value}" disabled>
-      </div>
-    `;
+function creaInput(label, name, value = "", {
+  type = "text",
+  minLength = null,
+  maxLength = null,
+  min = null,
+  max = null,
+  pattern = null,
+  placeholder = "",
+  required = false
+} = {}) {
+  return `
+    <div class="mb-2">
+      <label class="form-label"><strong>${label}</strong></label>
+      <input 
+        type="${type}" 
+        class="form-control" 
+        name="${name}" 
+        value="${value}" 
+        ${placeholder ? `placeholder="${placeholder}"` : ""}
+        ${minLength !== null ? `minlength="${minLength}"` : ""}
+        ${maxLength !== null ? `maxlength="${maxLength}"` : ""}
+        ${min !== null ? `min="${min}"` : ""}
+        ${max !== null ? `max="${max}"` : ""}
+        ${pattern ? `pattern="${pattern}"` : ""}
+        ${required ? "required" : ""}
+        disabled
+      >
+    </div>
+  `;
 }
 
 function creaCheckbox(label, name, checked = false, imgPath = null) {
