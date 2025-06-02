@@ -141,9 +141,10 @@ function mostra(lista) {
                 width="48" 
                 style="${r.Esplicito ? '' : 'visibility:hidden'}"
             />
-            <span class="fascia-eta" style="${r.FasciaEta ? '' : 'visibility:hidden'}" title="Fascia di età">
-                ${r.FasciaEta || ''}+
+            <span class="fascia-eta-wrapper" title="Fascia di età" style="${r.FasciaEta ? '' : 'visibility:hidden'}">
+                <span class="fascia-eta-content"><b>${r.FasciaEta || ''}+</b></span>
             </span>
+
         </td>
         `;
 

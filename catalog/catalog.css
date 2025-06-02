@@ -86,3 +86,16 @@
     }
 
 
+
+    .fascia-eta-wrapper {
+        display: inline-block;
+        width: 3ch; /* spazio per 3 caratteri */
+        text-align: center;
+        overflow: hidden;
+        font-size: larger;
+    }
+
+    .fascia-eta-content {
+        display: inline-block;
+        width: 100%;
+    }
