@@ -163,25 +163,30 @@ function mostra(lista) {
             const headerTr = document.createElement("tr");
             headerTr.classList.add("dettagli-header");
             headerTr.innerHTML = `
-            <td colspan="100%" class="p-2">
-                <div class="d-flex align-items-start gap-3">
-                <button class="btn btn-sm btn-info mt-1" onclick='mostraDettagli(${r.Id})'>
-                    <img src="../icons/monitor-expand-small.ico" alt="Dettagli"
-                        style="width: 16px; height: 16px; vertical-align: middle; margin-right: 4px;" />
-                    Dettagli
-                </button>
-                <div class="d-flex flex-column">
-                    <div class="d-flex">
-                    <div class="me-2 fw-bold" style="min-width: 100px;">Proprietario:</div>
-                    <div class="text-truncate">${r.Proprietario || ''}</div>
+                <td colspan="100%" class="p-2">
+                    <div class="d-flex align-items-start gap-3">
+                        <button class="btn btn-sm btn-info mt-1" onclick='mostraDettagli(${r.Id})'>
+                            <img src="../icons/monitor-expand-small.ico" alt="Dettagli"
+                            style="width: 16px; height: 16px; vertical-align: middle; margin-right: 4px;" />
+                            Dettagli
+                        </button>
+
+                        <div class="d-flex flex-column">
+                            <div class="d-flex">
+                            <div class="me-2 fw-bold" style="min-width: 100px;">Proprietario:</div>
+                            <div class="text-truncate">${r.Proprietario || ''}</div>
+                            </div>
+                            <div class="d-flex">
+                            <div class="me-2 fw-bold" style="min-width: 100px;">Autore:</div>
+                            <div class="text-truncate">${r.Autore || ''}</div>
+                            </div>
+                            <div class="d-flex flex-wrap">
+                            <div class="me-2 fw-bold" style="min-width: 100px;">Note:</div>
+                            <div class="text-break">${r.Note || ''}</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="d-flex">
-                    <div class="me-2 fw-bold" style="min-width: 100px;">Autore:</div>
-                    <div class="text-truncate">${r.Autore || ''}</div>
-                    </div>
-                </div>
-                </div>
-            </td>
+                </td>
             `;
 
 
