@@ -111,7 +111,7 @@ function mostra(lista) {
         let difficoltaContent = ``;
         if (difficoltaImg[difficoltaKey]) {
             difficoltaContent = `
-                    <img src="../icons/${difficoltaImg[difficoltaKey]}" alt="${r.Difficolta}" style="width: 48px; margin-right: 8px;">
+                    <img src="../icons/${difficoltaImg[difficoltaKey]}" alt="${r.Difficolta}" style="width: 48px;">
             `;
         }
 
