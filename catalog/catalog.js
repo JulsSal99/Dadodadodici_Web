@@ -23,27 +23,28 @@ function setLoading(isLoading, testo = "Caricamento...") {
 
 async function controllaStatoAPI() {
     const stato = document.getElementById("stato-api");
-    try {
+    // try {
         const res = await fetch(API_URL + "?version=true");
         if (!res.ok) throw new Error("Errore");
         const data = await res.json();
-        if (data.version) {
-            // stato.textContent = "🟢";
-            // stato.title = `API OK - Versione ${data.version}`;
-        } else {
+        if (!data.version) {
             throw new Error("Formato inatteso");
-        }
-    } catch (e) {
-        // stato.textContent = "🔴";
-        // stato.title = "Errore nel contattare l'API";
-    }
+        } 
+        // else {
+        //     // stato.textContent = "🟢";
+        //     // stato.title = `API OK - Versione ${data.version}`;
+        // }
+    // } catch (e) {
+    //     // stato.textContent = "🔴";
+    //     // stato.title = "Errore nel contattare l'API";
+    // }
 }
 
 function mostraMessaggioErrore(testo) {
     const toastEl = document.getElementById('toast-head');
     toastEl.classList.add('bg-danger');
     toastEl.setAttribute('aria-live', 'assertive');
-    const toastBody = document.getElementById('testoToastErrore');
+    const toastBody = document.getElementById('testoToast');
     toastBody.textContent = testo;
 
     const toast = new bootstrap.Toast(toastEl, { delay: 5000 });
@@ -78,7 +79,7 @@ async function caricaDati() {
             setLoading(true, "Chiamo casa madre..");
             await controllaStatoAPI(); 
             console.error("Errore durante il caricamento dati:", error);
-            mostraMessaggioErrore("Errore: impossibile contattare il server. Riprova più tardi.");
+            mostraMessaggioErrore("Errore: Errore durante il caricamento dati.");
         } catch (apiErr) {
             console.error("Controllo stato API fallito:", apiErr);
             mostraMessaggioErrore("Errore: impossibile contattare il server. Riprova più tardi.");
@@ -95,9 +96,27 @@ function mostra(lista) {
     const tbody = document.getElementById("tabella-body");
     tbody.innerHTML = "";
 
+    const difficoltaImg = {
+        "facile": "speedometer_small_easy.png",
+        "medio": "speedometer_small_medium.png",
+        "difficile": "speedometer_small_hard.png",
+        "cinghiale": "boar_medium.png"
+    };
+
     lista.forEach(r => {
         const tr = document.createElement("tr");
         tr.classList.add("riga-principale");
+
+        const difficoltaKey = String(r.Difficolta || "").toLowerCase();
+        let difficoltaContent = ``;
+        if (difficoltaImg[difficoltaKey]) {
+            difficoltaContent = `
+                <div class="d-flex align-items-center">
+                    <img src="/icons/${difficoltaImg[difficoltaKey]}" alt="${r.Difficolta}" style="height: 42px; margin-right: 8px;">
+                </div>
+            `;
+        }
+
         tr.innerHTML = `
         <td>
             <div style="white-space: nowrap; overflow-x: auto;">
@@ -109,7 +128,7 @@ function mostra(lista) {
                 ${r.Tipologia || ''}
             <div>
         </td>
-        <td class="text-truncate">${r.Difficolta}</td>
+        <td class="text-truncate">${difficoltaContent}</td>
         <td class="ps-0 pe-2 text-end" style="white-space: nowrap; width: 1%;">
             <img 
                 src="../icons/certified-icon-small.ico" 
@@ -173,16 +192,16 @@ function mostra(lista) {
 
                         <div class="d-flex flex-column">
                             <div class="d-flex">
-                            <div class="me-2 fw-bold" style="min-width: 100px;">Proprietario:</div>
-                            <div class="text-truncate">${r.Proprietario || ''}</div>
+                                <div class="me-2 fw-bold" style="min-width: 100px;">Proprietario:</div>
+                                <div class="text-truncate">${r.Proprietario || ''}</div>
                             </div>
                             <div class="d-flex">
-                            <div class="me-2 fw-bold" style="min-width: 100px;">Autore:</div>
-                            <div class="text-truncate">${r.Autore || ''}</div>
+                                <div class="me-2 fw-bold" style="min-width: 100px;">Autore:</div>
+                                <div class="text-truncate">${r.Autore || ''}</div>
                             </div>
                             <div class="d-flex flex-wrap">
-                            <div class="me-2 fw-bold" style="min-width: 100px;">Note:</div>
-                            <div class="text-break">${r.Note || ''}</div>
+                                <div class="me-2 fw-bold" style="min-width: 100px;">Note:</div>
+                                <div class="text-break">${r.Note || ''}</div>
                             </div>
                         </div>
                     </div>
