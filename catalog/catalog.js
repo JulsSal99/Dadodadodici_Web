@@ -111,9 +111,7 @@ function mostra(lista) {
         let difficoltaContent = ``;
         if (difficoltaImg[difficoltaKey]) {
             difficoltaContent = `
-                <div class="d-flex align-items-center">
-                    <img src="/icons/${difficoltaImg[difficoltaKey]}" alt="${r.Difficolta}" style="height: 42px; margin-right: 8px;">
-                </div>
+                    <img src="../icons/${difficoltaImg[difficoltaKey]}" alt="${r.Difficolta}" style="height: 42px; margin-right: 8px;">
             `;
         }
 
@@ -128,8 +126,8 @@ function mostra(lista) {
                 ${r.Tipologia || ''}
             <div>
         </td>
-        <td class="text-truncate">${difficoltaContent}</td>
         <td class="ps-0 pe-2 text-end" style="white-space: nowrap; width: 1%;">
+            ${difficoltaContent}
             <img 
                 src="../icons/certified-icon-small.ico" 
                 alt="Consigliato"
