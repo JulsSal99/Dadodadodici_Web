@@ -1,0 +1,101 @@
+    /* LOGICA */
+    #messaggio-errore {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        display: none;
+    }
+
+    .dettagli-header td {
+        background-color: #f0f0f0;
+        font-weight: 600;
+        color: #333;
+        padding: 8px 12px;
+        border-top: 1px solid #ddd;
+    }
+
+    .dettagli-valori td {
+        background-color: #fafafa;
+        padding: 8px 12px;
+        border-top: 1px solid #eee;
+        color: #555;
+    }
+
+    .dettagli-header, .dettagli-valori {
+        transform-origin: top;
+        transform: scaleY(0);
+        opacity: 0;
+        transition: transform 0.35s ease, opacity 0.35s ease;
+        will-change: transform, opacity;
+    }
+
+    .dettagli-header.show, .dettagli-valori.show {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+
+    .dettagli-header.show, .dettagli-valori.show {
+        max-height: 250px; /* lascia un po’ più di spazio per contenuti variabili */
+        opacity: 1;
+    }
+
+    /* Optional: aggiungi un leggero box-shadow per evidenziare la riga dettagli */
+    .dettagli-header.show td, 
+    .dettagli-valori.show td {
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    /* STILE */
+    .table-el-giochi {
+        font-size: small;
+    }
+    .fascia-eta {
+        font-weight: bold;
+        font-size: 1.1em;
+    }
+
+    .img-small-box {
+        width: 1%;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
+    .riga-principale {
+        cursor: pointer;
+        transition: width 0.3s ease;
+    }
+
+
+    .checkbox-button {
+        width: 4em;
+        height: 4em;
+        background-size: cover;
+        background-position: center;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: filter 0.2s, opacity 0.2s;
+        display: inline-block;
+    }
+
+    /* Grigio se deselezionato */
+    input[type="checkbox"]:not(:checked) + .checkbox-button {
+        filter: grayscale(100%);
+        opacity: 0.6;
+    }
+
+
+
+    .fascia-eta-wrapper {
+        display: inline-block;
+        width: 3ch; /* spazio per 3 caratteri */
+        text-align: center;
+        overflow: hidden;
+        font-size: larger;
+    }
+
+    .fascia-eta-content {
+        display: inline-block;
+        width: 100%;
+    }

@@ -140,7 +140,10 @@ function creaCampiInput(contenuto, gioco, modificabile){
         })}
         ${creaInput("Proprietario", "Proprietario", gioco.Proprietario)}
         ${creaInput("Tipologia", "Tipologia", gioco.Tipologia)}
-        ${creaInput("Difficolta", "Difficolta", gioco.Difficolta)}
+        ${creaSelect("Difficoltà", "Difficolta", ["Facile", "Medio", "Difficile", "Cinghiale"], {
+          required: true,
+          selected: gioco.Difficolta
+        })}
         ${creaInput("Fascia Età", "FasciaEta", gioco.FasciaEta, {
             type: "number",
             min: 0,
@@ -169,9 +172,9 @@ function creaCampiInput(contenuto, gioco, modificabile){
 
     const modificaBtn = form.querySelector("#modificaBtn")
     const eliminaBtn = form.querySelector("#eliminaBtn");
-    if (!modificabile){
+    if (!modificabile) {
         modificaBtn.addEventListener("click", () => {
-            form.querySelectorAll("input").forEach(input => input.disabled = false);
+            form.querySelectorAll("input, select").forEach(el => el.disabled = false);
             modificaBtn.classList.add("d-none");
             salvaBtn.classList.remove("d-none");
         });
@@ -181,11 +184,12 @@ function creaCampiInput(contenuto, gioco, modificabile){
             setLoading(false);
         });
     } else {
-        form.querySelectorAll("input").forEach(input => input.disabled = false);
+        form.querySelectorAll("input, select").forEach(el => el.disabled = false);
         modificaBtn.classList.add("d-none");
         eliminaBtn.classList.add("d-none");
         salvaBtn.classList.remove("d-none");
     }
+
 }
 
 function creaInput(label, name, value = "", {
@@ -218,6 +222,31 @@ function creaInput(label, name, value = "", {
     </div>
   `;
 }
+
+function creaSelect(label, name, options = [], {
+  multiple = false,
+  required = false,
+  selected = null,
+  disabled = true 
+} = {}) {
+  return `
+    <div class="mb-2">
+      <label class="form-label"><strong>${label}</strong></label>
+      <select 
+        class="form-select" 
+        name="${name}" 
+        ${multiple ? "multiple" : ""}
+        ${required ? "required" : ""}
+        ${disabled ? "disabled" : ""}
+      >
+        ${options.map(opt => `
+          <option value="${opt}" ${selected === opt ? "selected" : ""}>${opt}</option>
+        `).join('')}
+      </select>
+    </div>
+  `;
+}
+
 
 function creaCheckbox(label, name, checked = false, imgPath = null) {
   if (!imgPath) {
