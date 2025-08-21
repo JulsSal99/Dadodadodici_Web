@@ -2,10 +2,34 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <title>Redirect...</title>
-  <meta http-equiv="refresh" content="0; url=catalog_react/test.html" />
+  <title>Seleziona Portale</title>
+  <!-- <title>Redirect...</title>
+  <meta http-equiv="refresh" content="0; url=catalog_react/catalog.html" /> -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      gap: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <p>Reindirizzamento in corso...</p>
+  <!-- <p>Reindirizzamento in corso...</p> -->
+  <h1>Scegli il portale da aprire</h1>
+  <button onclick="window.location.href='catalog_react/catalog.html'">
+    Portale Nuovo
+  </button>
+  <button onclick="window.location.href='catalog/catalog.html'">
+    Portale Vecchio
+  </button>
 </body>
 </html>
